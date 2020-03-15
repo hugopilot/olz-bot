@@ -1,13 +1,14 @@
 import discord
 import config
+import usrmanagement
+import typing
 from discord.ext import commands
 from discord.ext.commands import has_permissions, MissingPermissions
-from functions import channels
-from functions import permissions
-from functions import dbhandler
-from functions import onjoinsetup
+from modules import channels
+from modules import permissions
+from modules import sqldb
+from models import rank
 
-dbCursor = dbhandler.dbCursor
 
 # Initialize the bot
 bot = commands.Bot(command_prefix=config.prefix)
@@ -24,33 +25,48 @@ async def cl(ctx, name, scope):
     await channels.CreateLokaal(ctx, name, scope)
     await ctx.send("Created {}".format(name))
 
+
+"""Deletes a Lokaal-category"""
 @bot.command()
 @commands.has_any_role(permissions.docentRoleName, permissions.rectorRoleName, permissions.adminRoleName)
 async def dl(ctx, name:str):
     await channels.DeleteLokaal(ctx, name)
 
-# Create role objects after startup
-@bot.event
-async def on_ready():
-    pass
-    #global g
-    #g = bot.get_guild(688009472949485600)
-    #await permissions.initRoles(g)
+@bot.command()
+@commands.has_any_role(permissions.rectorRoleName, permissions.adminRoleName)
+async def assignpup(ctx, musr: typing.Union[discord.User, str], role:str):
+    # Try to convert to objects or die
+    if(isinstance(musr, str)):
+        await ctx.send("_Kon niet gebruiker vinden_")
+        return
+    try:
+        ra = rank.Rank[role]
+        print(ra)
+        print(str(ra))
+    except KeyError:
+        await ctx.send("_Kon niet de klas herkennen (Klassen zijn hoofdlettergevoelig!)_")
+        return
 
+    # Add to database
+    sqldb.updaterecord(musr.id, ra)
+
+    # Give confirmation
+    await ctx.send("_Assigned!_")
+
+@bot.command()
+async def getpup(ctx, musr: typing.Union[discord.User, str]):
+    # Try to convert to objects or die
+    if(isinstance(musr, str)):
+        await ctx.send("_Kon niet gebruiker vinden_")
+        return
+    r = sqldb.getuser(musr.id)
+    if(not r):
+        await ctx.send("_Geen data gevonden!_")
+    else:
+        await ctx.send("_{} is rank {}_".format(musr, r[0][1]))
 @bot.event
 async def on_member_join(member):
-	# Check if the user is new and if so PM for setup
-	uid = member.id
-	dbCursor.execute('SELECT id FROM users WHERE id = ?', uid)
-	result = dbCursor.fetchone()
-	if result.id == None:
-		# User is new
-		# PM user and add DB entry
-		onjoinsetup(member)
-	else:
-		# User is not new
-		pass
-
+    await usrmanagement.setup(bot, member)
 
 # Start running the bot
 bot.run(config.token)

@@ -94,6 +94,10 @@ ipython_config.py
 # PEP 582; used by e.g. github.com/David-OConnor/pyflow
 __pypackages__/
 
+# VS stuff
+.vs/
+.vscode/
+
 # Celery stuff
 celerybeat-schedule
 celerybeat.pid
@@ -128,3 +132,4 @@ dmypy.json
 # Pyre type checker
 .pyre/
 /src/config.py
+/data/data.db
