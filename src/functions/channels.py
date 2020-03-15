@@ -17,3 +17,21 @@ async def CreateLokaal(ctx, name, scope):
     c = await ctx.guild.create_category(name, overwrites=overwrites)
     await ctx.guild.create_text_channel('chat', category=c)
     await ctx.guild.create_voice_channel('voice', category=c)
+    del overwrites
+
+async def DeleteLokaal(ctx, name):
+    # Find the category
+    for x in ctx.guild.by_category():
+        print(x)
+        if(not x[0] == None and x[0].name == str(name)):
+            # Loop through nested channels
+            for c in x[1]:
+                # Delete the channel
+                await c.delete()
+
+            # Finally, delete the catagory
+            await x[0].delete()
+            return
+    # Give error if none were found
+    raise discord.NotFound
+        

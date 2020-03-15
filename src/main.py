@@ -18,8 +18,12 @@ g = None
 @commands.has_any_role(permissions.docentRoleName, permissions.rectorRoleName, permissions.adminRoleName)
 async def cl(ctx, name, scope):
     await channels.CreateLokaal(ctx, name, scope)
-    await ctx.send("OK created {}".format(name))
+    await ctx.send("Created {}".format(name))
 
+@bot.command()
+@commands.has_any_role(permissions.docentRoleName, permissions.rectorRoleName, permissions.adminRoleName)
+async def dl(ctx, name:str):
+    await channels.DeleteLokaal(ctx, name)
 
 # Create role objects after startup
 @bot.event
