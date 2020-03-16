@@ -21,8 +21,8 @@ async def help(ctx):
     embed=discord.Embed(title="Help page", description="Hoe ik werk?")
     embed.set_author(name="OLZ Bot")
     embed.set_thumbnail(url="https://cdn.discordapp.com/avatars/688016785051615234/fe16c6e01261201f6c7db801053635ca.png?size=256")
-    embed.add_field(name="Lokaalcommando's", value="""`!cl <naam> <scope>` - Maakt een lokaal aan. 
-    `!dl <naam>` - Verwijderd een lokaal""", inline=False)
+    embed.add_field(name="Lokaalcommando's", value="""`!cl <naam> <scope>` - Maakt een lokaal aan. Als je spaties gebruikt in je naam, gebruik dan aanhalingstekens. Voorbeeld: `!cl "Les van Bot" KLAS1` 
+    `!dl <naam>` - Verwijdert een lokaal.""", inline=False)
     embed.add_field(name="Help commando's", value="""`!help` - Print dit""", inline=False)
     embed.add_field(name="Lijst van scopes", value="""De mogelijke scopes zijn:
     - KLAS1
@@ -35,7 +35,7 @@ async def help(ctx):
     - VWO5
     - VWO6""", inline=False)
     embed.set_footer(text="OLZBot v0.1;")
-    msg = await ctx.send(embed=embed)
+    msg = await ctx.author.send(embed=embed)
 
 """Creates a Lokaal-catagory with their mandatory channels. Then returns the name. Only for Docent, Rector and Admins"""
 @bot.command()
