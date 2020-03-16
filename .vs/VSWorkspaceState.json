@@ -1,8 +1,10 @@
 {
   "ExpandedNodes": [
     "",
-    "\\src"
+    "\\src",
+    "\\src\\models",
+    "\\src\\modules"
   ],
-  "SelectedNode": "\\src\\config.py",
+  "SelectedNode": "\\src\\main.py",
   "PreviewInSolutionExplorer": false
 }

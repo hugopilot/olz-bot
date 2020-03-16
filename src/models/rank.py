@@ -10,6 +10,8 @@ class Rank(Enum):
     VWO4 = 7
     VWO5 = 8
     VWO6 = 9
+    DOCENT = 10
+    RECTOR = 11
     def __str__(self):
         return self.name
 

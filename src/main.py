@@ -4,6 +4,7 @@ import usrmanagement
 import typing
 from discord.ext import commands
 from discord.ext.commands import has_permissions, MissingPermissions
+from modules import log
 from modules import channels
 from modules import permissions
 from modules import sqldb
@@ -23,6 +24,7 @@ g = None
 @commands.has_any_role(permissions.docentRoleName, permissions.rectorRoleName, permissions.adminRoleName)
 async def cl(ctx, name, scope):
     await channels.CreateLokaal(ctx, name, scope)
+    log._log("{} created new lokaal: {}".format(ctx.author, name))
     await ctx.send("Created {}".format(name))
 
 
@@ -31,7 +33,11 @@ async def cl(ctx, name, scope):
 @commands.has_any_role(permissions.docentRoleName, permissions.rectorRoleName, permissions.adminRoleName)
 async def dl(ctx, name:str):
     await channels.DeleteLokaal(ctx, name)
+    log._log("{} deleted lokaal: {}".format(ctx.author, name))
+    await ctx.send("Deleted category {}".format(name))
 
+
+"""Assigns a rank to a pupil/staff member"""
 @bot.command()
 @commands.has_any_role(permissions.rectorRoleName, permissions.adminRoleName)
 async def assignpup(ctx, musr: typing.Union[discord.User, str], role:str):
@@ -49,11 +55,13 @@ async def assignpup(ctx, musr: typing.Union[discord.User, str], role:str):
 
     # Add to database
     sqldb.updaterecord(musr.id, ra)
-
+    log._log("{} assigned {} role {}".format(ctx.author, musr, str(ra)))
     # Give confirmation
     await ctx.send("_Assigned!_")
 
+"""Debug command: get rank"""
 @bot.command()
+@commands.has_any_role(permissions.rectorRoleName, permissions.adminRoleName)
 async def getpup(ctx, musr: typing.Union[discord.User, str]):
     # Try to convert to objects or die
     if(isinstance(musr, str)):
