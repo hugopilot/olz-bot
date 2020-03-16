@@ -35,5 +35,5 @@ async def DeleteLokaal(ctx, name):
             await x[0].delete()
             return
     # Give error if none were found
-    raise discord.NotFound("No catagory found", name=name)
+    raise discord.NotFound("No catagory found")
         
