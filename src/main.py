@@ -21,8 +21,8 @@ async def help(ctx):
     embed=discord.Embed(title="Help page", description="Hoe ik werk?")
     embed.set_author(name="OLZ Bot")
     embed.set_thumbnail(url="https://cdn.discordapp.com/avatars/688016785051615234/fe16c6e01261201f6c7db801053635ca.png?size=256")
-    embed.add_field(name="Lokaalcommando's", value="""`!cl <naam> <scope>` - Maakt een lokaal aan. Als je spaties gebruikt in je naam, gebruik dan aanhalingstekens. Voorbeeld: `!cl "Les van Bot" KLAS1` 
-    `!dl <naam>` - Verwijdert een lokaal.""", inline=False)
+    embed.add_field(name="Lokaalcommando's", value="""`!lokaal <naam> <scope>` - Maakt een lokaal aan. Als je spaties gebruikt in je naam, gebruik dan aanhalingstekens. Voorbeeld: `!cl "Les van Bot" KLAS1` 
+    `!verwijder <naam>` - Verwijdert een lokaal.""", inline=False)
     embed.add_field(name="Help commando's", value="""`!help` - Print dit""", inline=False)
     embed.add_field(name="Lijst van scopes", value="""De mogelijke scopes zijn:
     - KLAS1
@@ -41,7 +41,7 @@ async def help(ctx):
 @bot.command()
 # Checks if mandatory roles are present
 @commands.has_any_role(permissions.docentRoleName, permissions.rectorRoleName, permissions.adminRoleName)
-async def cl(ctx, name, scope):
+async def lokaal(ctx, name, scope):
     await channels.CreateLokaal(ctx, name, scope)
     log._log("{} created new lokaal: {}".format(ctx.author, name))
     await ctx.send("Created {}".format(name))
@@ -50,7 +50,7 @@ async def cl(ctx, name, scope):
 """Deletes a Lokaal-category"""
 @bot.command()
 @commands.has_any_role(permissions.docentRoleName, permissions.rectorRoleName, permissions.adminRoleName)
-async def dl(ctx, name:str):
+async def verwijder(ctx, name:str):
     await channels.DeleteLokaal(ctx, name)
     log._log("{} deleted lokaal: {}".format(ctx.author, name))
     await ctx.send("Deleted category {}".format(name))
