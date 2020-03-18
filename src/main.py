@@ -8,6 +8,7 @@ from modules import log
 from modules import channels
 from modules import permissions
 from modules import sqldb
+from modules import roles
 from models import rank
 from models import errors
 
@@ -71,14 +72,13 @@ async def assignpup(ctx, musr: typing.Union[discord.User, str], role:str):
         return
     try:
         ra = rank.Rank[role]
-        print(ra)
-        print(str(ra))
     except KeyError:
         await ctx.send("_🚫 Kon niet de klas herkennen (Klassen zijn hoofdlettergevoelig!)_")
         return
 
     # Add to database
     sqldb.updaterecord(musr.id, ra)
+    await roles.assignrole(musr, bot.get_guild(config.guild), ra, "Assigned by {}".format(ctx.author))
     log._log("{} assigned {} role {}".format(ctx.author, musr, str(ra)))
     # Give confirmation
     await ctx.send("_Toegewezen!_")
@@ -107,10 +107,8 @@ async def mute(ctx, musr: typing.Union[discord.User, str], reason: str = None):
 
     r = sqldb.getuser(musr.id)
 
-    if (not r):
-        await ctx.send("_🚫 Geen data gevonden!_")
     else:
-        await roles.assignrole(ctx, bot.get_guild(config.guild), rank.Rank.MUTED, reason)
+        await roles.assignrole(musr, bot.get_guild(config.guild), rank.Rank.MUTED, reason)
         sqldb.assignMute(r[0][0])
         await ctx.send("_{} is eruitgestuurd!_".format(musr))
 
@@ -126,7 +124,7 @@ async def unmute(ctx, musr: typing.Union[discord.User, str]):
     if (not r):
         await ctx.send("_🚫 Geen data gevonden!_")
     else:
-        await roles.removerole(ctx, bot.get_guild(config.guild), rank.Rank.MUTED, 'Unmuted')
+        await roles.removerole(musr, bot.get_guild(config.guild), rank.Rank.MUTED, 'Unmuted')
         sqldb.removeMute(r[0][0])
         await ctx.send("_{} is ge-unmute!_".format(musr))
 
