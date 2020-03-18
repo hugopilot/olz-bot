@@ -152,7 +152,7 @@ async def on_member_join(member):
     await log._log(bot, "Member {} joined".format(member))
     await usrmanagement.setup(bot, member)
 
-async def on_member_leave(member):
+async def on_member_remove(member):
     await log._log(bot, "Member {} left".format(member))
 # Start running the bot
 bot.run(config.token)
