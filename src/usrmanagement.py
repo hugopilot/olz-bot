@@ -3,6 +3,7 @@ import asyncio
 from modules import sqldb
 from models import rank
 from modules import roles
+from modules import log
 import config
 klaselist = ["1️⃣", "2️⃣", "3️⃣", "4️⃣", "5️⃣", "6️⃣", "7️⃣", "8️⃣", "9️⃣"]
 
@@ -46,7 +47,7 @@ async def setup(bot, ctx):
     except asyncio.TimeoutError:
         # Delete the message
         await msg.delete()
-        await ctx.author.send("Geen rollen toegewezen. Vraag een admin voor assistentie als dat nodig is.")
+        await ctx.send("Geen rollen toegewezen. Vraag een admin voor assistentie als dat nodig is.")
         return
     else:
         # r/badcode
@@ -73,10 +74,12 @@ async def setup(bot, ctx):
     # If this passes, something went really wrong...
     if(ra == None):
         await ctx.send("_:thinking: Er is iets fout gegaan. Contacteer een admin (foutcode: 04)_")
+        log._log("ra passed none. USR: {}".format(ctx))
         return
 
     # Save db 
     sqldb.updaterecord(ctx.id, ra)
     await roles.assignrole(ctx, bot.get_guild(config.guild), ra)
-
+    log._log("Role {} assigned to {}".format(str(ra), ctx))
     await ctx.send("_Thanks! Roles assigned!_")
+

@@ -5,6 +5,6 @@
     "\\src\\models",
     "\\src\\modules"
   ],
-  "SelectedNode": "\\src\\main.py",
+  "SelectedNode": "\\src\\modules\\log.py",
   "PreviewInSolutionExplorer": false
 }
