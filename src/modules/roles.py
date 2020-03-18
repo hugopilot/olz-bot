@@ -16,7 +16,7 @@ async def removeRole(ctx, guild, role: rank.Rank, reason: str = None):
     if r == None:
         return
 
-    if reason == None:
+    if(reason == None):
         reason = "Auto-removed by OLZBot"
 
     await ctx.remove_roles(r, reason = reason)
