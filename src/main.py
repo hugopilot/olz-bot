@@ -9,6 +9,7 @@ from modules import channels
 from modules import permissions
 from modules import sqldb
 from models import rank
+from models import errors
 
 
 # Initialize the bot
@@ -54,7 +55,7 @@ async def lokaal(ctx, name, scope=None):
 async def verwijder(ctx, name:str):
     try:
         await channels.DeleteLokaal(ctx, name)
-    except discord.NotFound:
+    except errors.NotFound:
         await ctx.send("_Kon niet {} verwijderen: Categorie niet gevonden_".format(name))
     log._log("{} deleted lokaal: {}".format(ctx.author, name))
     await ctx.send("_✅ {} verwijderd!_".format(name))
