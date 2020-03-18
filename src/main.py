@@ -22,7 +22,7 @@ async def help(ctx):
     embed=discord.Embed(title="Help page", description="Hoe ik werk?")
     embed.set_author(name="OLZ Bot")
     embed.set_thumbnail(url="https://cdn.discordapp.com/avatars/688016785051615234/fe16c6e01261201f6c7db801053635ca.png?size=256")
-    embed.add_field(name="Lokaalcommando's", value="""`!lokaal <naam> <scope>` - Maakt een lokaal aan. Als je spaties gebruikt in je naam, gebruik dan aanhalingstekens. Voorbeeld: `!cl "Les van Bot" KLAS1` 
+    embed.add_field(name="Lokaalcommando's", value="""`!lokaal <naam> <scope>` - Maakt een lokaal aan. Als je spaties gebruikt in je naam, gebruik dan aanhalingstekens. Voorbeeld: `!cl "Les van Bot" KLAS1`
     `!verwijder <naam>` - Verwijdert een lokaal.""", inline=False)
     embed.add_field(name="Help commando's", value="""`!help` - Print dit""", inline=False)
     embed.add_field(name="Lijst van scopes", value="""De mogelijke scopes zijn:
@@ -96,6 +96,24 @@ async def getpup(ctx, musr: typing.Union[discord.User, str]):
         await ctx.send("_🚫 Geen data gevonden!_")
     else:
         await ctx.send("_{} is rank {}_".format(musr, r[0][1]))
+
+"""Remove current rank and save it in the db, wait a bit and give user the rank back"""
+@bot.command()
+@commands.has_any_role(permissions.docentRoleName, permssions.adminRoleName)
+async def stuureruit(ctx, musr: typing.Union[discord.User, str], reason: str):
+    if (isinstance(musr, str)):
+        await ctx.send("_🚫 Kon niet gebruiker vinden_")
+        return
+
+    r = sqldb.getuser(musr.id)
+
+    if (not r):
+        await ctx.send("_🚫 Geen data gevonden!_")
+    else:
+        userRank = r[0][1]
+        await roles.removeRole(ctx, bot.get_guild(config.guild), userRank, 'Eruitgestuurd')
+        await ctx.send("_{} is eruitgestuurd!".format(musr))
+
 @bot.event
 async def on_member_join(member):
     await usrmanagement.setup(bot, member)

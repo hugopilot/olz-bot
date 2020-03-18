@@ -70,16 +70,15 @@ async def setup(bot, ctx):
         elif(str(reaction.emoji) == klaselist[8]):
             ra = rank.Rank(9)
         await msg.delete()
-    
+
     # If this passes, something went really wrong...
     if(ra == None):
         await ctx.send("_:thinking: Er is iets fout gegaan. Contacteer een admin (foutcode: 04)_")
         log._log("ra passed none. USR: {}".format(ctx))
         return
 
-    # Save db 
+    # Save db
     sqldb.updaterecord(ctx.id, ra)
     await roles.assignrole(ctx, bot.get_guild(config.guild), ra)
     log._log("Role {} assigned to {}".format(str(ra), ctx))
     await ctx.send("_✅ Bedankt! Rechten toegewezen!_")
-

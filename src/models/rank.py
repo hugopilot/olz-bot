@@ -12,6 +12,6 @@ class Rank(Enum):
     VWO6 = 9
     DOCENT = 10
     RECTOR = 11
+    MUTED = 0
     def __str__(self):
         return self.name
-
