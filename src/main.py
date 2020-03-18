@@ -149,6 +149,7 @@ async def unmute(ctx, musr: typing.Union[discord.Member, str]):
 
 @bot.event
 async def on_member_join(member):
+    await log._log(bot, "Member {} joined".format(member))
     await usrmanagement.setup(bot, member)
 
 async def on_member_leave(member):

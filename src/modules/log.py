@@ -9,6 +9,6 @@ async def _log(bot, message):
         log_f.write('{}\n'.format(m))
         log_f.close()
     print(m)
-    ch = discord.utils.get(bot.get_guild(config.guild).get_channel(config.logch))
+    ch = bot.get_guild(config.guild).get_channel(config.logch)
     embed=discord.Embed(title="Log", description=m)
     await ch.send(embed=embed)
