@@ -110,7 +110,7 @@ async def mute(ctx, musr: typing.Union[discord.User, str], reason: str):
     if (not r):
         await ctx.send("_🚫 Geen data gevonden!_")
     else:
-        await roles.assignrole(ctx, bot.get_guild(config.guild), rank.Rank.MUTED, 'Gemute')
+        await roles.assignrole(ctx, bot.get_guild(config.guild), rank.Rank.MUTED, reason)
         sqldb.assignMute(r[0][0])
         await ctx.send("_{} is eruitgestuurd!_".format(musr))
 
