@@ -38,6 +38,29 @@ def updaterecord(id:int, role:rank.Rank):
     # Finally, close the connection and exit
     close_con(c)
 
+def assignMute(id: int):
+    # Create connection to the database and get a cursor instance
+    c = connect()
+    cu = c.cursor()
+
+    q = "UPDATE pupils SET muted = 1 WHERE id = '{}'".format(id)
+    cu.execute(q)
+    c.commit()
+
+    close_con(c)
+
+def removeMute(id: int):
+    # Create connection to the database and get a cursor instance
+    c = connect()
+    cu = c.cursor()
+
+    q = "UPDATE pupils SET muted = 0 WHERE id = '{}'".format(id)
+    cu.execute(q)
+    c.commit()
+
+    close_con(c)
+
+
 def getuser(id:int):
     # First, create a connection with the db
     c = connect()
@@ -55,6 +78,3 @@ def getuser(id:int):
         return False
     else:
         return r
-
-    
-
