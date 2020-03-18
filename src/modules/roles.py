@@ -5,7 +5,7 @@ async def assignrole(ctx, guild, role: rank.Rank, reason: str = None):
     r = discord.utils.get(guild.roles, name=str(role))
     if(r == None):
         return
-    if reason == None:
+    if(reason == None):
         reason = "Auto-assiged by OLZBot"
 
     await ctx.add_roles(r, reason=reason)
