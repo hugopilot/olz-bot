@@ -111,7 +111,7 @@ async def stuureruit(ctx, musr: typing.Union[discord.User, str], reason: str):
         await ctx.send("_🚫 Geen data gevonden!_")
     else:
         userRank = r[0][1]
-        await roles.removeRole(ctx, bot.get_guild(config.guild), userRank, 'Eruitgestuurd')
+        await roles.assignrole(ctx, bot.get_guild(config.guild), rank.Rank.MUTED)
         await ctx.send("_{} is eruitgestuurd!".format(musr))
 
 @bot.event
