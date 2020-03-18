@@ -81,5 +81,5 @@ async def setup(bot, ctx):
     sqldb.updaterecord(ctx.id, ra)
     await roles.assignrole(ctx, bot.get_guild(config.guild), ra)
     log._log("Role {} assigned to {}".format(str(ra), ctx))
-    await ctx.send("_Thanks! Roles assigned!_")
+    await ctx.send("_Bedankt! Rechten toegewezen!_")
 

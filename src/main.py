@@ -44,7 +44,7 @@ async def help(ctx):
 async def lokaal(ctx, name, scope):
     await channels.CreateLokaal(ctx, name, scope)
     log._log("{} created new lokaal: {}".format(ctx.author, name))
-    await ctx.send("Created {}".format(name))
+    await ctx.send("{} aangemaakt!".format(name))
 
 
 """Deletes a Lokaal-category"""
@@ -53,7 +53,7 @@ async def lokaal(ctx, name, scope):
 async def verwijder(ctx, name:str):
     await channels.DeleteLokaal(ctx, name)
     log._log("{} deleted lokaal: {}".format(ctx.author, name))
-    await ctx.send("Deleted category {}".format(name))
+    await ctx.send("{} verwijderd!".format(name))
 
 
 """Assigns a rank to a pupil/staff member"""
@@ -76,7 +76,7 @@ async def assignpup(ctx, musr: typing.Union[discord.User, str], role:str):
     sqldb.updaterecord(musr.id, ra)
     log._log("{} assigned {} role {}".format(ctx.author, musr, str(ra)))
     # Give confirmation
-    await ctx.send("_Assigned!_")
+    await ctx.send("_Toegewezen!_")
 
 """Debug command: get rank"""
 @bot.command()
