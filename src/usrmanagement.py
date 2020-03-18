@@ -13,6 +13,9 @@ async def setup(bot, ctx):
     if(r):
         # Assign role if already exists
         ra = rank.Rank[r[0][1]]
+        muted = bool(r[0][2])
+        if(muted):
+            await roles.assignrole(ctx, bot.get_guild(config.guild), rank.Rank.MUTED)
         await roles.assignrole(ctx, bot.get_guild(config.guild), ra)
         return
 

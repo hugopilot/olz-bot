@@ -107,12 +107,12 @@ async def mute(ctx, musr: typing.Union[discord.Member, str], reason: str = None)
 
     r = sqldb.getuser(musr.id)
     if(not r):
-        rr = discord.utils.get(musr.roles)
+        rr = musr.roles
         rrr = None
-        for role in rr:
+        for i in rr:
             # Try to parse into Rank
             try:
-                rrr = rank.Rank[str(role)]
+                rrr = rank.Rank[str(i)]
                 break
             except KeyError:
                 continue
@@ -123,7 +123,8 @@ async def mute(ctx, musr: typing.Union[discord.Member, str], reason: str = None)
 
     await roles.assignrole(musr, bot.get_guild(config.guild), rank.Rank.MUTED, reason)
     sqldb.assignMute(musr.id)
-    await ctx.send("_{} is eruitgestuurd!_".format(musr))
+    await musr.move_to(None)
+    await ctx.send("_{} is mute!_".format(musr))
 
 @bot.command()
 @commands.has_any_role(permissions.docentRoleName, permissions.adminRoleName)
@@ -137,7 +138,7 @@ async def unmute(ctx, musr: typing.Union[discord.Member, str]):
     if (not r):
         await ctx.send("_🚫 Geen data gevonden!_")
     else:
-        await roles.removerole(musr, bot.get_guild(config.guild), rank.Rank.MUTED, 'Unmuted')
+        await roles.removeRole(musr, bot.get_guild(config.guild), rank.Rank.MUTED, 'Unmuted')
         sqldb.removeMute(r[0][0])
         await ctx.send("_{} is ge-unmute!_".format(musr))
 
