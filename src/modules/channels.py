@@ -9,11 +9,13 @@ async def CreateLokaal(ctx, name, scope=None):
     # Create initial PermissionOverwrite
     t = ctx.author
     t2 = discord.utils.get(ctx.guild.roles, name=permissions.rectorRoleName)
+    t3 = discord.utils.get(ctx.guild.roles, name="MUTED")
     overwrites = {
         ctx.guild.default_role: discord.PermissionOverwrite(read_messages=False, connect=False),
         ctx.guild.me: discord.PermissionOverwrite(read_messages=True, connect=True, speak=True),
         t: discord.PermissionOverwrite(read_messages=True, connect=True, speak=True, stream=True),
-        t2: discord.PermissionOverwrite(read_messages=True, connect=True, speak=True)
+        t2: discord.PermissionOverwrite(read_messages=True, connect=True, speak=True),
+        t3: discord.PermissionOverwrite(send_messages=False, speak=False)
     }
     # Switch scope and update PermissionOverwrite
     overwrites[discord.utils.get(ctx.guild.roles, name=scope)] = discord.PermissionOverwrite(read_messages=True, connect=True, speak=True, stream=False)
@@ -26,7 +28,7 @@ async def CreateLokaal(ctx, name, scope=None):
     # Destroy the overwrites obj
     del overwrites
     # Log and send msg
-    log._log("{} created new lokaal: {}".format(ctx.author, name))
+    
     await ctx.send("✅ {} aangemaakt!".format(name))
 
 async def DeleteLokaal(ctx, name):

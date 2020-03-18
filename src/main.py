@@ -26,6 +26,8 @@ async def help(ctx):
     embed.add_field(name="Lokaalcommando's", value="""`!lokaal <naam> <scope>` - Maakt een lokaal aan. Als je spaties gebruikt in je naam, gebruik dan aanhalingstekens. Voorbeeld: `!cl "Les van Bot" KLAS1`
     `!verwijder <naam>` - Verwijdert een lokaal.""", inline=False)
     embed.add_field(name="Help commando's", value="""`!help` - Print dit""", inline=False)
+    embed.add_field(name="Straf commando's (alleen voor Rector en Admin)", value="""`!mute` <user> - Voorkomt dat gebruikers kunnen praten in alle kanalen
+    !unmute <user>- Laat gebruikers weer praten""", inline=False)
     embed.add_field(name="Lijst van scopes", value="""De mogelijke scopes zijn:
     - KLAS1
     - KLAS2
@@ -36,7 +38,7 @@ async def help(ctx):
     - HAVO5
     - VWO5
     - VWO6""", inline=False)
-    embed.set_footer(text="OLZBot v0.1;")
+    embed.set_footer(text="OLZBot v0.5;")
     msg = await ctx.author.send(embed=embed)
 
 """Creates a Lokaal-catagory with their mandatory channels. Then returns the name. Only for Docent, Rector and Admins"""
@@ -46,6 +48,7 @@ async def help(ctx):
 async def lokaal(ctx, name, scope=None):
     try:
         await channels.CreateLokaal(ctx, name, scope)
+        await log._log(bot, "{} created new lokaal: {}".format(ctx.author, name))
     except:
         await ctx.send("🚫 Mist een scope. Inputs: `Naam: {}`; `Scope: {}`".format(name, str(scope)))
 
@@ -58,7 +61,7 @@ async def verwijder(ctx, name:str):
         await channels.DeleteLokaal(ctx, name)
     except errors.NotFound:
         await ctx.send("_Kon niet {} verwijderen: Categorie niet gevonden_".format(name))
-    log._log("{} deleted lokaal: {}".format(ctx.author, name))
+    await log._log(bot, "{} deleted lokaal: {}".format(ctx.author, name))
     await ctx.send("_✅ {} verwijderd!_".format(name))
 
 
@@ -79,7 +82,7 @@ async def assignpup(ctx, musr: typing.Union[discord.User, str], role:str):
     # Add to database
     sqldb.updaterecord(musr.id, ra)
     await roles.assignrole(musr, bot.get_guild(config.guild), ra, "Assigned by {}".format(ctx.author))
-    log._log("{} assigned {} role {}".format(ctx.author, musr, str(ra)))
+    await log._log(bot, "{} assigned {} role {}".format(ctx.author, musr, str(ra)))
     # Give confirmation
     await ctx.send("_Toegewezen!_")
 
@@ -99,7 +102,7 @@ async def getpup(ctx, musr: typing.Union[discord.User, str]):
 
 """Remove current rank and save it in the db, wait a bit and give user the rank back"""
 @bot.command()
-@commands.has_any_role(permissions.docentRoleName, permissions.adminRoleName)
+@commands.has_any_role(permissions.rectorRoleName, permissions.adminRoleName)
 async def mute(ctx, musr: typing.Union[discord.Member, str], reason: str = None):
     if (isinstance(musr, str)):
         await ctx.send("_🚫 Kon niet gebruiker vinden_")
@@ -124,10 +127,11 @@ async def mute(ctx, musr: typing.Union[discord.Member, str], reason: str = None)
     await roles.assignrole(musr, bot.get_guild(config.guild), rank.Rank.MUTED, reason)
     sqldb.assignMute(musr.id)
     await musr.move_to(None)
-    await ctx.send("_{} is mute!_".format(musr))
+    await log._log(bot, "{} muted {}".format(ctx.author, musr))
+    await ctx.send("_{} muted!_".format(musr))
 
 @bot.command()
-@commands.has_any_role(permissions.docentRoleName, permissions.adminRoleName)
+@commands.has_any_role(permissions.rectorRoleName, permissions.adminRoleName)
 async def unmute(ctx, musr: typing.Union[discord.Member, str]):
     if (isinstance(musr, str)):
         await ctx.send("_🚫 Kon niet gebruiker vinden_")
@@ -140,11 +144,14 @@ async def unmute(ctx, musr: typing.Union[discord.Member, str]):
     else:
         await roles.removeRole(musr, bot.get_guild(config.guild), rank.Rank.MUTED, 'Unmuted')
         sqldb.removeMute(r[0][0])
-        await ctx.send("_{} is ge-unmute!_".format(musr))
+        await log._log(bot, "{} unmuted {}".format(ctx.author, musr))
+        await ctx.send("_{}'s muted rol verwijderd!_".format(musr))
 
 @bot.event
 async def on_member_join(member):
     await usrmanagement.setup(bot, member)
 
+async def on_member_leave(member):
+    await log._log(bot, "Member {} left".format(member))
 # Start running the bot
 bot.run(config.token)

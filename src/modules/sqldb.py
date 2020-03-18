@@ -25,7 +25,7 @@ def updaterecord(id:int, role:rank.Rank):
     cu = c.cursor()
     # If record doesn't yet exist, create one
     if(len(r) < 1):
-        q = "INSERT INTO pupils (id, rank) VALUES('{}', '{}')".format(id, str(role))
+        q = "INSERT INTO pupils (id, rank, muted) VALUES('{}', '{}', 0)".format(id, str(role))
         cu.execute(q)
         c.commit()
     # Else, just update it
