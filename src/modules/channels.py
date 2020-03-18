@@ -1,5 +1,6 @@
 import discord
 from modules import permissions
+from models import errors
 
 async def CreateLokaal(ctx, name, scope=None):
     if(scope == None):
@@ -42,5 +43,5 @@ async def DeleteLokaal(ctx, name):
             await x[0].delete()
             return
     # Give error if none were found
-    raise discord.NotFound("No catagory found")
+    raise errors.NotFound(message="No catagory found")
         
