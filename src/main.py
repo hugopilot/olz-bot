@@ -100,7 +100,7 @@ async def getpup(ctx, musr: typing.Union[discord.User, str]):
 """Remove current rank and save it in the db, wait a bit and give user the rank back"""
 @bot.command()
 @commands.has_any_role(permissions.docentRoleName, permssions.adminRoleName)
-async def stuureruit(ctx, musr: typing.Union[discord.User, str], reason: str):
+async def mute(ctx, musr: typing.Union[discord.User, str], reason: str):
     if (isinstance(musr, str)):
         await ctx.send("_🚫 Kon niet gebruiker vinden_")
         return
@@ -110,9 +110,25 @@ async def stuureruit(ctx, musr: typing.Union[discord.User, str], reason: str):
     if (not r):
         await ctx.send("_🚫 Geen data gevonden!_")
     else:
-        userRank = r[0][1]
-        await roles.assignrole(ctx, bot.get_guild(config.guild), rank.Rank.MUTED)
-        await ctx.send("_{} is eruitgestuurd!".format(musr))
+        await roles.assignrole(ctx, bot.get_guild(config.guild), rank.Rank.MUTED, 'Gemute')
+        sqldb.assignMute(r[0][0])
+        await ctx.send("_{} is eruitgestuurd!_".format(musr))
+
+@bot.command()
+@commands.has_any_role(permissions.docentRoleName, permissions.adminRoleName)
+async def unmute(ctx, musr: typing.Union[discord.User, str])
+    if (isinstance(musr, str)):
+        await ctx.send("_🚫 Kon niet gebruiker vinden_")
+        return
+
+    r = sqldb.getuser(musr.id)
+
+    if (not r):
+        await ctx.send("_🚫 Geen data gevonden!_")
+    else:
+        await roles.removerole(ctx, bot.get_guild(config.guild), rank.Rank.MUTED, 'Ge-unmute')
+        sqldb.removeMute(r[0][0])
+        await ctx.send("_{} is ge-unmute!_".format(musr))
 
 @bot.event
 async def on_member_join(member):
