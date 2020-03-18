@@ -13,7 +13,7 @@ async def CreateLokaal(ctx, name, scope):
     }
     # Switch scope and update PermissionOverwrite
     overwrites[discord.utils.get(ctx.guild.roles, name=scope)] = discord.PermissionOverwrite(read_messages=True, connect=True, speak=True, stream=False)
-    nname = "{} {}".format(name, ctx.member.nick)
+    nname = "{} {} {}".format(name, str(scope), ctx.author.nick)
     # Create category and channels
     c = await ctx.guild.create_category(nname, overwrites=overwrites)
     await ctx.guild.create_text_channel('chat', category=c)
@@ -24,7 +24,7 @@ async def CreateLokaal(ctx, name, scope):
 
 async def DeleteLokaal(ctx, name):
     # Find the category
-    nname = "{} {}".format(name, ctx.member.nick)
+    nname = "{} {}".format(name, ctx.author.nick)
     for x in ctx.guild.by_category():
         if(not x[0] == None and x[0].name == str(nname)):
             # Loop through nested channels
