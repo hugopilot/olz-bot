@@ -100,21 +100,34 @@ async def getpup(ctx, musr: typing.Union[discord.User, str]):
 """Remove current rank and save it in the db, wait a bit and give user the rank back"""
 @bot.command()
 @commands.has_any_role(permissions.docentRoleName, permissions.adminRoleName)
-async def mute(ctx, musr: typing.Union[discord.User, str], reason: str = None):
+async def mute(ctx, musr: typing.Union[discord.Member, str], reason: str = None):
     if (isinstance(musr, str)):
         await ctx.send("_🚫 Kon niet gebruiker vinden_")
         return
 
     r = sqldb.getuser(musr.id)
+    if(not r):
+        rr = discord.utils.get(musr.roles)
+        rrr = None
+        for role in rr:
+            # Try to parse into Rank
+            try:
+                rrr = rank.Rank[str(role)]
+                break
+            except KeyError:
+                continue
+        if(rrr == None):
+            # Just die inside
+            rrr = rank.Rank.MUTED
+        sqldb.updaterecord(musr.id, rrr)
 
-    else:
-        await roles.assignrole(musr, bot.get_guild(config.guild), rank.Rank.MUTED, reason)
-        sqldb.assignMute(r[0][0])
-        await ctx.send("_{} is eruitgestuurd!_".format(musr))
+    await roles.assignrole(musr, bot.get_guild(config.guild), rank.Rank.MUTED, reason)
+    sqldb.assignMute(musr.id)
+    await ctx.send("_{} is eruitgestuurd!_".format(musr))
 
 @bot.command()
 @commands.has_any_role(permissions.docentRoleName, permissions.adminRoleName)
-async def unmute(ctx, musr: typing.Union[discord.User, str]):
+async def unmute(ctx, musr: typing.Union[discord.Member, str]):
     if (isinstance(musr, str)):
         await ctx.send("_🚫 Kon niet gebruiker vinden_")
         return
