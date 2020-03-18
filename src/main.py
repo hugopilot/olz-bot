@@ -41,19 +41,23 @@ async def help(ctx):
 @bot.command()
 # Checks if mandatory roles are present
 @commands.has_any_role(permissions.docentRoleName, permissions.rectorRoleName, permissions.adminRoleName)
-async def lokaal(ctx, name, scope):
-    await channels.CreateLokaal(ctx, name, scope)
-    log._log("{} created new lokaal: {}".format(ctx.author, name))
-    await ctx.send("{} aangemaakt!".format(name))
+async def lokaal(ctx, name, scope=None):
+    try:
+        await channels.CreateLokaal(ctx, name, scope)
+    except:
+        await ctx.send("🚫 Mist een scope. Inputs: `Naam: {}`; `Scope: {}`".format(name, str(scope)))
 
 
 """Deletes a Lokaal-category"""
 @bot.command()
 @commands.has_any_role(permissions.docentRoleName, permissions.rectorRoleName, permissions.adminRoleName)
 async def verwijder(ctx, name:str):
-    await channels.DeleteLokaal(ctx, name)
+    try:
+        await channels.DeleteLokaal(ctx, name)
+    except discord.NotFound:
+        await ctx.send("_Kon niet {} verwijderen: Categorie niet gevonden_".format(name))
     log._log("{} deleted lokaal: {}".format(ctx.author, name))
-    await ctx.send("{} verwijderd!".format(name))
+    await ctx.send("_✅ {} verwijderd!_".format(name))
 
 
 """Assigns a rank to a pupil/staff member"""
@@ -62,14 +66,14 @@ async def verwijder(ctx, name:str):
 async def assignpup(ctx, musr: typing.Union[discord.User, str], role:str):
     # Try to convert to objects or die
     if(isinstance(musr, str)):
-        await ctx.send("_Kon niet gebruiker vinden_")
+        await ctx.send("_🚫 Kon niet gebruiker vinden_")
         return
     try:
         ra = rank.Rank[role]
         print(ra)
         print(str(ra))
     except KeyError:
-        await ctx.send("_Kon niet de klas herkennen (Klassen zijn hoofdlettergevoelig!)_")
+        await ctx.send("_🚫 Kon niet de klas herkennen (Klassen zijn hoofdlettergevoelig!)_")
         return
 
     # Add to database
@@ -84,11 +88,11 @@ async def assignpup(ctx, musr: typing.Union[discord.User, str], role:str):
 async def getpup(ctx, musr: typing.Union[discord.User, str]):
     # Try to convert to objects or die
     if(isinstance(musr, str)):
-        await ctx.send("_Kon niet gebruiker vinden_")
+        await ctx.send("_🚫 Kon niet gebruiker vinden_")
         return
     r = sqldb.getuser(musr.id)
     if(not r):
-        await ctx.send("_Geen data gevonden!_")
+        await ctx.send("_🚫 Geen data gevonden!_")
     else:
         await ctx.send("_{} is rank {}_".format(musr, r[0][1]))
 @bot.event

@@ -1,7 +1,10 @@
 import discord
 from modules import permissions
 
-async def CreateLokaal(ctx, name, scope):
+async def CreateLokaal(ctx, name, scope=None):
+    if(scope == None):
+        raise TypeError("Missing Scope")
+        return
     # Create initial PermissionOverwrite
     t = ctx.author
     t2 = discord.utils.get(ctx.guild.roles, name=permissions.rectorRoleName)
@@ -21,6 +24,9 @@ async def CreateLokaal(ctx, name, scope):
 
     # Destroy the overwrites obj
     del overwrites
+    # Log and send msg
+    log._log("{} created new lokaal: {}".format(ctx.author, name))
+    await ctx.send("✅ {} aangemaakt!".format(name))
 
 async def DeleteLokaal(ctx, name):
     # Find the category
