@@ -126,7 +126,7 @@ async def unmute(ctx, musr: typing.Union[discord.User, str])
     if (not r):
         await ctx.send("_🚫 Geen data gevonden!_")
     else:
-        await roles.removerole(ctx, bot.get_guild(config.guild), rank.Rank.MUTED, 'Ge-unmute')
+        await roles.removerole(ctx, bot.get_guild(config.guild), rank.Rank.MUTED, 'Unmuted')
         sqldb.removeMute(r[0][0])
         await ctx.send("_{} is ge-unmute!_".format(musr))
 
