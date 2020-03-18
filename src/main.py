@@ -99,7 +99,7 @@ async def getpup(ctx, musr: typing.Union[discord.User, str]):
 
 """Remove current rank and save it in the db, wait a bit and give user the rank back"""
 @bot.command()
-@commands.has_any_role(permissions.docentRoleName, permssions.adminRoleName)
+@commands.has_any_role(permissions.docentRoleName, permissions.adminRoleName)
 async def mute(ctx, musr: typing.Union[discord.User, str], reason: str = None):
     if (isinstance(musr, str)):
         await ctx.send("_🚫 Kon niet gebruiker vinden_")
@@ -116,7 +116,7 @@ async def mute(ctx, musr: typing.Union[discord.User, str], reason: str = None):
 
 @bot.command()
 @commands.has_any_role(permissions.docentRoleName, permissions.adminRoleName)
-async def unmute(ctx, musr: typing.Union[discord.User, str])
+async def unmute(ctx, musr: typing.Union[discord.User, str]):
     if (isinstance(musr, str)):
         await ctx.send("_🚫 Kon niet gebruiker vinden_")
         return
