@@ -166,10 +166,14 @@ async def on_member_remove(member):
 
 @bot.event
 async def on_message_delete(message):
-    await log._log(bot, "{} deleted message with content: {}".format(message.author, message.content), "Message ID: {}; Created at: {}".format(message.id, message.created_at))
+    await log._log(bot, "{} deleted message with content: _{}_".format(message.author, message.content), "Message ID: {}; Created at: {}".format(message.id, message.created_at))
 
 @bot.event
 async def on_message_edit(before, after):
+    # Prevent bot loop
+    if(before.author == bot.user):
+        return
+
     await log._log(bot, """{} edited message:
     
     **Before**:
