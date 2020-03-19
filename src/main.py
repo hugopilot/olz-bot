@@ -154,6 +154,7 @@ async def unmute(ctx, musr: typing.Union[discord.Member, str]):
 @commands.has_any_role(permissions.docentRoleName, permissions.rectorRoleName, permissions.adminRoleName)
 async def purge(ctx, amount=50):
     await ctx.channel.purge(limit=amount)
+    await log._log(bot, "{} used purge command on {}".format(ctx.author, ctx.channel.name), "Member ID: {}".format(ctx.author.id))
 
 @bot.event
 async def on_member_join(member):
