@@ -56,11 +56,14 @@ async def lokaal(ctx, name, scope=None):
 """Deletes a Lokaal-category"""
 @bot.command()
 @commands.has_any_role(permissions.docentRoleName, permissions.rectorRoleName, permissions.adminRoleName)
-async def verwijder(ctx, name:str):
+async def verwijder(ctx, name:str, scope=None):
+    if(scope == None):
+        await ctx.send("🚫 Mist een scope. Inputs: `Naam: {}`; `Scope: {}`".format(name, str(scope)))
     try:
-        await channels.DeleteLokaal(ctx, name)
+        await channels.DeleteLokaal(ctx, name, scope)
     except errors.NotFound:
-        await ctx.send("_Kon niet {} verwijderen: Categorie niet gevonden_".format(name))
+        await ctx.send("_🚫 Kon niet {} verwijderen: Categorie niet gevonden_".format(name))
+        return
     await log._log(bot, "{} deleted lokaal: {}".format(ctx.author, name))
     await ctx.send("_✅ {} verwijderd!_".format(name))
 
@@ -147,12 +150,32 @@ async def unmute(ctx, musr: typing.Union[discord.Member, str]):
         await log._log(bot, "{} unmuted {}".format(ctx.author, musr))
         await ctx.send("_{}'s muted rol verwijderd!_".format(musr))
 
+@bot.command()
+@commands.has_any_role(permissions.docentRoleName, permissions.rectorRoleName, permissions.adminRoleName)
+async def purge(ctx, amount=50):
+    await ctx.channel.purge(limit=amount)
+
 @bot.event
 async def on_member_join(member):
-    await log._log(bot, "Member {} joined".format(member))
+    await log._log(bot, "Member {} joined".format(member), "Member ID: {}".format(member.id))
     await usrmanagement.setup(bot, member)
 
+@bot.event
 async def on_member_remove(member):
-    await log._log(bot, "Member {} left".format(member))
+    await log._log(bot, "Member {} left".format(member), "Member ID: {}".format(member.id))
+
+@bot.event
+async def on_message_delete(message):
+    await log._log(bot, "{} deleted message with content: {}".format(message.author, message.content), "Message ID: {}; Created at: {}".format(message.id, message.created_at))
+
+@bot.event
+async def on_message_edit(before, after):
+    await log._log(bot, """{} edited message:
+    
+    **Before**:
+    {}
+    
+    **After**:
+    {}""".format(after.author, before.content, after.content), "Message ID: {}; Created at: {}; Edited at: {}".format(after.id, before.created_at, after.edited_at))
 # Start running the bot
 bot.run(config.token)

@@ -31,9 +31,9 @@ async def CreateLokaal(ctx, name, scope=None):
     
     await ctx.send("✅ {} aangemaakt!".format(name))
 
-async def DeleteLokaal(ctx, name):
+async def DeleteLokaal(ctx, name, scope):
     # Find the category
-    nname = "{} {}".format(name, ctx.author.nick)
+    nname = "{} {} {}".format(name, str(scope), ctx.author.nick)
     for x in ctx.guild.by_category():
         if(not x[0] == None and x[0].name == str(nname)):
             # Loop through nested channels
